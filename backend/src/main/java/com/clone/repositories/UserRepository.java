@@ -23,7 +23,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("SELECT u FROM Follow f JOIN f.userByFollowerId u WHERE f.followeeId = :userId")
     List<User> findAllFollowersOf(@Param("userId") int userId);
 
-    // Find users that user is following
+    // Find users that user is following (followees)
     @Query("SELECT u FROM Follow f JOIN f.userByFolloweeId u WHERE f.followerId = :userId")
     List<User> findAllFolloweesOf(@Param("userId") int userId);
 }

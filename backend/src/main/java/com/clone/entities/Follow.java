@@ -1,5 +1,7 @@
 package com.clone.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 
 /**

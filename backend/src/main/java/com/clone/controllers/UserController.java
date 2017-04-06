@@ -1,10 +1,13 @@
 package com.clone.controllers;
 
+import com.clone.entities.Follow;
 import com.clone.entities.User;
 import com.clone.entities.UserRole;
 import com.clone.exceptions.UserNotFoundException;
+import com.clone.repositories.FollowRepository;
 import com.clone.repositories.UserRepository;
 import com.clone.repositories.UserRoleRepository;
+import com.clone.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,18 +37,22 @@ public class UserController {
 
     private final UserRepository userRepository;
     private final UserRoleRepository userRoleRepository;
+    private final FollowRepository followRepository;
+    private final UserService userService;
 
     @Autowired
-    UserController(UserRepository userRepository, UserRoleRepository userRoleRepository) {
+    UserController(UserRepository userRepository, UserRoleRepository userRoleRepository, FollowRepository followRepository, UserService userService) {
         this.userRepository = userRepository;
         this.userRoleRepository = userRoleRepository;
+        this.followRepository = followRepository;
+        this.userService = userService;
     }
 
+    // Get currently logged in user
     @RequestMapping(value = "/loggedInUser", method = RequestMethod.GET)
-    public String getLoggedInUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.toString();
-        return currentPrincipalName;
+    public User getLoggedInUser() {
+        User loggedInUser = userService.getLoggedInUser();
+        return loggedInUser;
     }
 
     // GET all users
@@ -55,21 +62,18 @@ public class UserController {
     }
 
     // GET user by id
-    @RequestMapping(value = "/admin/user/{userId}", method = RequestMethod.GET)  // TODO: Only allow admin
+    @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)  // TODO: Only allow admin
     public User getUserById(@PathVariable int userId) {
+        validateUser(userId);
         User user = this.userRepository.findOne(userId);
-        if (user == null) {
-            throw new UserNotFoundException(userId);
-        }
         return user;
     }
 
+    /* GET user by username */
     @RequestMapping(value = "/name/{username}", method = RequestMethod.GET)
     public User getUserByUsername(@PathVariable String username) {
         User user = this.userRepository.findByUsername(username);
-        if (user == null) {
-            throw new UserNotFoundException(username);
-        }
+        validateUser(user.getUserId());
         return user;
     }
 
@@ -86,23 +90,62 @@ public class UserController {
     }
 
     // PUT, update user by id
-    @RequestMapping(value = "/{userId}", method = RequestMethod.PUT)            // TODO: Only allow loged in user
+    @RequestMapping(value = "/{userId}", method = RequestMethod.PUT)            // TODO: Only allow logged in user
     public ResponseEntity<User> updateUser(@PathVariable int userId, @RequestBody User updatedUser) {
+        validateUser(userId);
         User user = this.userRepository.findOne(userId);
-        if (user == null) {
-            throw new UserNotFoundException(userId);
-        }
         updatePropertiesFoundInRequestBody(updatedUser, user);
         this.userRepository.save(user);
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
     // DELETE user by id
-    @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)     // TODO: Only allow admin
+    @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)     // TODO: Only allow admin (and logged in user)
     public ResponseEntity deleteUserById(@PathVariable int userId) {
         this.userRepository.delete(userId);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
+
+    // PUT, add user to followees (follow a user)
+    @RequestMapping(value = "/{followerId}/follow/{followeeId}", method = RequestMethod.PUT)
+    public ResponseEntity followUser(@PathVariable("followerId") int followerId, @PathVariable("followeeId") int followeeId) {
+
+        boolean requestedByLoggedInUser = (userService.getLoggedInUser().getUserId() == followerId);
+        validateUser(followeeId);
+
+        if (!requestedByLoggedInUser) {
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED); // TODO: create error for unauthorized requests
+        }
+        Follow follow = createNewFollow(followerId, followeeId);
+        return new ResponseEntity<Follow>(follow, HttpStatus.OK);
+    }
+
+    // PUT, remove user from followees (unfollow a user)
+    @RequestMapping(value = "/{followerId}/unfollow/{followeeId}", method = RequestMethod.PUT)
+    public ResponseEntity unfollowUser(@PathVariable("followerId") int followerId, @PathVariable("followeeId") int followeeId) {
+
+        boolean requestedByLoggedInUser = (userService.getLoggedInUser().getUserId() == followerId);
+        validateUser(followeeId);
+
+        if (!requestedByLoggedInUser) {
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED); // TODO: create error for unauthorized requests
+        }
+        Follow follow = this.followRepository.findByFollowerIdAndFolloweeId(followerId, followeeId);
+        if (follow != null) {
+            this.followRepository.delete(follow);
+        }
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    // Create new follow and save it
+    private Follow createNewFollow(int followerId, int followeeId) {
+        Follow follow = new Follow();
+        follow.setFollowerId(followerId);
+        follow.setFolloweeId(followeeId);
+        this.followRepository.save(follow);
+        return follow;
+    }
+
 
     // Update only not-null values
     private void updatePropertiesFoundInRequestBody(@RequestBody User updatedUser, User user) {
@@ -111,9 +154,12 @@ public class UserController {
         if (updatedUser.getPassword() != null) user.setPassword(updatedUser.getPassword());
     }
 
+
+
     // TODO : use method!
+    // Check if a user exists, otherwise throw exception
     private void validateUser(int userId) {
-        this.userRepository.findByUserId(userId).orElseThrow(
+        this.userRepository.findByUserId(userId).orElseThrow (
                 () -> new UserNotFoundException(userId));
     }
 

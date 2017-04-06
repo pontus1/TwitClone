@@ -1,6 +1,8 @@
 package com.clone.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -78,7 +80,8 @@ public class Tweet {
         this.authorId = authorId;
     }
 
-    @JsonIgnore
+    @JsonProperty("author")
+    @JsonIgnoreProperties({"userId", "password", "enabled"}) // ignore everything but username and email
     @ManyToOne
     @JoinColumn(name = "author_id", referencedColumnName = "user_id", nullable = false, insertable =  false, updatable = false)
     public User getUserByAuthorId() {

@@ -1,0 +1,14 @@
+<div ng-repeat="user in allUsers">
+  <div style="text-align:center;">
+    <h4><span ng-click="goToUserProfile(user.username)" style="cursor:pointer;">{{ user.username }} <small>{{ user.email }}</small></span></h4>
+
+    <button class="btn"
+    ng-class="user.followed? 'btn-danger' : 'btn-success'"
+    ng-click="toggleFollow($index, user.userId)">
+      {{ user.followed? 'Unfollow' : 'Follow' }}
+    </button>
+  </div>
+  <hr>
+</div>
+
+<!-- ng-click="followUser(user.userId)" -->

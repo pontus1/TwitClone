@@ -1,6 +1,8 @@
 package com.clone.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
@@ -23,7 +25,7 @@ public class User {
 
 
     @Id
-    @JsonIgnore
+    //@JsonIgnore
     @Column(name = "user_id")
     public int getUserId() {
         return userId;
@@ -115,7 +117,8 @@ public class User {
         this.followers = followsByUserId;
     }
 
-    @JsonIgnore
+    @JsonProperty("followers")
+    @JsonIgnoreProperties({"followeeId", "userByFollowerId", "userByFolloweeId"}) // ignore everything but username and email
     @OneToMany(mappedBy = "userByFolloweeId")
     public Collection<Follow> getFollowees() {
         return followees;

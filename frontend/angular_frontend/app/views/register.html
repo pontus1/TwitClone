@@ -1,0 +1,83 @@
+<div style="margin: 0 200px 100px;">
+	<!--  Username -->
+	<form name="signupForm" role="form">
+		<div class="form-group">
+			<label for="username">Användarnamn</label>
+			<input class="form-control"
+				ng-model="username"
+			  ng-pattern="regexUsername"
+				ng-class="{'invalid' : signupForm.username.$invalid && isValidated, 'valid' : !signupForm.username.$invalid && signupForm.username.$dirty}"
+				type="text"
+				name="username"
+				placeholder="Användarnamn"
+				required/>
+				<div class="alert alert-danger"
+				role="alert"
+				ng-show="signupForm.username.$invalid && isValidated">
+					<ul>
+						<li>Ditt användarnamn måste bestå av minst fyra tecken</li>
+					</ul>
+				</div>
+		</div>
+		<!--  Email -->
+		<div class="form-group">
+			<label for="email">Ange e-post</label>
+			<input class="form-control"
+				ng-model="email"
+				ng-pattern="regexEmail"
+				ng-class="{'invalid' : signupForm.email.$invalid && isValidated, 'valid' : !signupForm.email.$invalid && signupForm.username.$dirty}"
+				type="text"
+				name="email"
+				placeholder="E-post"
+				required/>
+				<div class="alert alert-danger"
+				role="alert"
+				ng-show="signupForm.email.$invalid && isValidated">
+					<ul>
+						<li>Ange en giltig e-postadress</li>
+					</ul>
+				</div>
+		</div>
+		<!--  Password -->
+		<div class="form-group">
+			<label for="password">Lösenord</label>
+			<input class="form-control"
+			  ng-model="password"
+			  ng-pattern="regexPassword"
+			  ng-class="{'invalid' : signupForm.password.$invalid && isValidated, 'valid' : !signupForm.password.$invalid && signupForm.password.$dirty}"
+			  type="password"
+		 	  name="password"
+		 	  placeholder="Ange lösenord"
+			  required/>
+			<input style="margin-top:10px;"
+				class="form-control"
+				ng-model="confirmPassword"
+				ng-class="{'invalid' : (signupForm.confirmPassword.$invalid || !matchingPasswords) && isValidated, 'valid' : !signupForm.password.$invalid && matchingPasswords}"
+				ng-pattern="regexPassword"
+				type="password"
+				name="confirmPassword"
+				placeholder="Upprepa lösenord"
+				required/>
+				<div class="alert alert-danger"
+				role="alert"
+				ng-show="((signupForm.password.$invalid || signupForm.confirmPassword.$invalid) || !matchingPasswords) && isValidated">
+					<ul>
+						<li ng-show="signupForm.password.$invalid && isValidated">Ditt lösenord måste bestå av minst 6 tecken</li>
+						<li ng-show="!matchingPasswords">Lösenorden måste matcha varandra</li>
+					</ul>
+				</div>
+		</div>
+
+		<button class="btn btn-primary pull-right" ng-click="signup()">Skapa konto</button>
+	</form>
+</div>
+
+
+<style media="screen">
+	.invalid {
+		border: 2px solid #a94442;
+	}
+	.valid {
+		border: 2px solid #3c763d;
+	}
+</style>

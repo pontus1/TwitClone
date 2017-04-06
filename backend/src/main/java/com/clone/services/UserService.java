@@ -44,5 +44,19 @@ public class UserService {
         user.setUserRole(userRole);
     }
 
+    // Get enabled status (blocked or not)
+    public boolean getEnabledStatus(int userId) {
+        User user = userRepository.findOne(userId);
+        /* User doesn't exist */
+        if (user == null) {
+            return false;
+        }
+        /* User is not enabled */
+        if (user.getEnabled() == 0) {
+            return false;
+        }
+        return true;
+    }
+
 
 }
