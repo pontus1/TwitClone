@@ -104,6 +104,7 @@ angular.module('twitterCloneApp')
       $scope.email = '';
       $scope.password = '';
       $scope.confirmPassword = '';
+      $scope.isValidated = false;
     }
 
     /*******************
