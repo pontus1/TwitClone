@@ -17,6 +17,7 @@ angular.module('twitterCloneApp')
          *******************/
 
         $scope.tweetText = '';
+        $scope.charactersLeft = 140;
 
         /*******************
               Functions
@@ -38,7 +39,17 @@ angular.module('twitterCloneApp')
             alert('Your tweet must contain at least 2 characters')
           }
         };
-        
+
+        /*******************
+              Watchers
+         *******************/
+
+         $scope.$watch('tweetText', function(newVal, oldVal) {
+           if (oldVal.length !== newVal.length) {
+             $scope.charactersLeft = 140 - newVal.length;
+           }
+         });
+
       }
     ];
 
