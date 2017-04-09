@@ -1,5 +1,11 @@
 <post-section last-tweet="lastTweet"></post-section>
 <div ng-repeat="tweet in tweets | orderBy: 'pubDate':true">
+
+  <button class="pull-right"
+    ng-if="tweet.authorId === loggedInUserId"
+    ng-click="deleteTweet(tweet.messageId)">
+    x
+  </button>
   <small><b>{{ tweet.author.username }}</b></small>
   <small class="pull-right">{{ tweet.pubDate | date:"short" }}</small>
   <div style="text-align: center;">

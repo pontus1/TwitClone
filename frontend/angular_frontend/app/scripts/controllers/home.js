@@ -14,7 +14,7 @@ angular.module('twitterCloneApp')
        Init controller
      *******************/
 
-    var loggedInUserId = LoggedInUser.userId;
+    $scope.loggedInUserId = LoggedInUser.userId;
 
     $scope.tweets = [];
     $scope.lastTweet = '';
@@ -38,13 +38,25 @@ angular.module('twitterCloneApp')
 
     /* Get all tweets from users followed by logged in user */
     function getTweets() {
-      tweetService.getTweetsByFollowee(loggedInUserId).then(function(data) {
+      tweetService.getTweetsByFollowee($scope.loggedInUserId).then(function(data) {
         if (data !== null) {
           $scope.tweets = data;
         } else {
           $scope.tweets = [];
         }
       });
+    };
+
+    /* Delete tweet by id */
+    $scope.deleteTweet = function(tweetId) {
+      console.log('tweet: ' + tweetId)
+      tweetService.deleteTweet(tweetId).then(function(data) {
+        if (data !== null) {
+          getTweets();
+        } else {
+          // TODO: Handle error
+        }
+      })
     };
 
 

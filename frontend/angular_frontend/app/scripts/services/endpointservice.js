@@ -15,7 +15,7 @@ angular.module('twitterCloneApp')
 
     return {
       /* Get url */
-      getUrl: function(endpoint, userId, loggedInUser, username) {
+      getUrl: function(endpoint, userId, loggedInUser, username, tweetId) {
         /* Check if endpoint string is empty, null or undefined */
         if (!endpoint || 0 === endpoint.length) {
           return '';
@@ -49,6 +49,8 @@ angular.module('twitterCloneApp')
               return base_url + '/api/tweets/all_tweets';
             case 'postTweet':
               return base_url + '/api/tweets/';
+            case 'deleteTweet':
+              return base_url + '/api/tweets/' + tweetId;
             default:
               return '';
           }

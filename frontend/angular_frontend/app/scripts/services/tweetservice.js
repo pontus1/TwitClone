@@ -10,7 +10,17 @@
 angular.module('twitterCloneApp')
   .factory('tweetService', function($http, $sessionStorage, endpointService) {
 
+    var tweetsByLoggedInUser;
+    // put new tweet: +1
+    // delete tweet -1
+
     return {
+
+      /* Get the number of tweets logged in user has posted */
+      getNumberOfTweetsByLoggedInUser: function() {
+        return tweetsByLoggedInUser;
+      },
+
       /* Get all tweets from followees (the users that loggedin user follows) */
       getTweetsByFollowee: function(userId) {
         return $http({
@@ -37,6 +47,7 @@ angular.module('twitterCloneApp')
           if (!Object.keys(response.data).length > 0) {
             response.data = null;
           }
+          tweetsByLoggedInUser = response.data.length;
           return response.data;
         }, function errorCallback(response) {
           return null;
@@ -72,6 +83,23 @@ angular.module('twitterCloneApp')
           if (!Object.keys(response.data).length > 0) {
             response.data = null;
           }
+          tweetsByLoggedInUser++;
+          return response.data;
+        }, function errorCallback(response) {
+          return null;
+        });
+      },
+
+      deleteTweet: function(tweetId) {
+        return $http({
+          url: endpointService.getUrl('deleteTweet', null, null, null, tweetId),
+          method: 'DELETE'
+        }).then(function successCallback(response) {
+          /* Check if there is no return data */
+          if (!response.status === 200) {
+            response.data = null;
+          }
+          tweetsByLoggedInUser--;
           return response.data;
         }, function errorCallback(response) {
           return null;
