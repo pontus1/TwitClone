@@ -40,8 +40,6 @@ public class RegisterController {
 
         // TODO:
         // Kolla att email följer regex pattern
-        // Kolla att email inte redan finns
-        // Kolla att username inte redan finns
         // Kolla att username följer regex pattern
         // Kolla att lösenord följer regex pattern
         // Create validation service????

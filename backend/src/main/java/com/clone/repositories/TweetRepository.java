@@ -14,11 +14,11 @@ public interface TweetRepository extends JpaRepository<Tweet, Integer> {
     List<Tweet> findByAuthorId(int userId);
 
 
-    @Query("SELECT DISTINCT t FROM Follow f JOIN f.userByFolloweeId u JOIN u.tweets t WHERE f.followerId = :followerId OR t.authorId =:followerId")
-    List<Tweet>findAllByFollowees(@Param("followerId") int followerId);
+    //@Query("SELECT DISTINCT t FROM Follow f JOIN f.userByFolloweeId u JOIN u.tweets t WHERE f.followerId = :followerId OR t.authorId =:followerId")
+    //List<Tweet>findAllByFollowees(@Param("followerId") int followerId);
 
-    // @Query("SELECT t FROM Follow f JOIN f.userByFolloweeId u JOIN u.tweets t WHERE f.followerId = :followerId")
-    // List<Tweet>findAllByFollowees(@Param("followerId") int followerId);
+     @Query("SELECT t FROM Follow f JOIN f.userByFolloweeId u JOIN u.tweets t WHERE f.followerId = :followerId")
+     List<Tweet>findAllByFollowees(@Param("followerId") int followerId);
 
 
 }

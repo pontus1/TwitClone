@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +22,6 @@ public class TweetController {
     //TODO: Handle errors / exceptions
 
     private final TweetRepository tweetRepository;
-
     private final UserService userService;
 
     @Autowired
@@ -52,10 +52,13 @@ public class TweetController {
     // GET all tweets from followees by follower id
     @RequestMapping(value = "/{followerId}/followees", method = RequestMethod.GET)  // TODO: Change to name
     public List<Tweet> getTweetsByFollowees(@PathVariable int followerId) {
-        return this.tweetRepository.findAllByFollowees(followerId);
+        List<Tweet> followeeTweets = this.tweetRepository.findAllByFollowees(followerId);
+        List<Tweet> ownTweets = this.tweetRepository.findByAuthorId(followerId);
+        followeeTweets.addAll(ownTweets);
+        return followeeTweets;
     }
 
-    // POST, new tweet by logged in user
+    // POST new tweet by logged in user
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public ResponseEntity<Tweet> saveTweet(@RequestBody Tweet tweet) {
         User author = this.userService.getLoggedInUser();
@@ -64,5 +67,19 @@ public class TweetController {
         return new ResponseEntity<Tweet>(tweet, HttpStatus.CREATED);
     }
 
-    // TODO: Delete tweeet?? Change tweet??
+    // DELETE tweet by id
+    @RequestMapping(value = "/{tweetId}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteTweetById(@PathVariable int tweetId) {
+        int authorId = this.tweetRepository.getOne(tweetId).getAuthorId();  // TODO: Check if tweet exsists
+        boolean requestedByAuthor = userService.getLoggedInUser().getUserId() == authorId;
+
+        if (!requestedByAuthor) {
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED); // TODO: create error for unauthorized requests
+        }
+        this.tweetRepository.delete(tweetId);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    // TODO: Change tweet??
+
 }
