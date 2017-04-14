@@ -37,8 +37,6 @@ class OAuth2Config extends AuthorizationServerConfigurerAdapter {
                 .authenticationManager(authenticationManager /*authentication -> authenticationManager.getOrBuild().authenticate(authentication)*/);
     }
 
-
-
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 

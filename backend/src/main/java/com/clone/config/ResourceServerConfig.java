@@ -27,8 +27,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/register/").hasRole("ANONYMOUS")
-                //.antMatchers("/api/users/admin/**").hasRole("ADMIN")
-                .antMatchers("/api/users", "/api/tweets").hasRole("USER");
+                //.antMatchers("/api/users/**", "/api/tweets/**").hasRole("USER")
+                .antMatchers("/api/admin/**").hasRole("ADMIN")
+                .antMatchers("/api/users/**", "/api/tweets/**").access("hasRole('ADMIN') or hasRole('USER')");
                 //.anyRequest().access("#oauth2.hasScope('scope1')");
 
     }
