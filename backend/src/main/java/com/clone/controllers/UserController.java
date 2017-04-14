@@ -2,7 +2,6 @@ package com.clone.controllers;
 
 import com.clone.entities.Follow;
 import com.clone.entities.User;
-import com.clone.entities.UserRole;
 import com.clone.exceptions.UnauthorizedException;
 import com.clone.exceptions.UserNotFoundException;
 import com.clone.repositories.FollowRepository;
@@ -12,18 +11,7 @@ import com.clone.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.security.Principal;
 import java.util.List;
 
 /**
@@ -32,9 +20,6 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api/users")
 public class UserController {
-
-    //TODO: Handle errors
-    // TODO: findByUserId() to be able to throw exception if not found
 
     private final UserRepository userRepository;
     private final UserRoleRepository userRoleRepository;
@@ -63,7 +48,7 @@ public class UserController {
     }
 
     // GET user by id
-    @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)  // TODO: Only allow admin
+    @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
     public User getUserById(@PathVariable int userId) {
         validateUser(userId);
         User user = this.userRepository.findOne(userId);
@@ -86,7 +71,7 @@ public class UserController {
     }
 
     // GET all followees of user by id
-    @RequestMapping(value = "/{userId}/followees", method = RequestMethod.GET)  // TODO: Change to name
+    @RequestMapping(value = "/{userId}/followees", method = RequestMethod.GET)
     public List<User> getAllFolloweesOf(@PathVariable int userId) {
         validateUser(userId);
         return this.userRepository.findAllFolloweesOf(userId);
@@ -104,7 +89,7 @@ public class UserController {
     }
 
     // DELETE user by id (only logged in user)
-    @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)     // TODO: Only allow admin (and logged in user)
+    @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
     public ResponseEntity deleteUserById(@PathVariable int userId) {
         validateUser(userId);
         authorizeUser(userId);
