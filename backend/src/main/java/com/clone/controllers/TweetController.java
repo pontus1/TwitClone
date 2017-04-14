@@ -50,7 +50,7 @@ public class TweetController {
 
     // ----- IMPORTANT METHOD ------
     // GET all tweets from followees by follower id
-    @RequestMapping(value = "/follower/{followerId}", method = RequestMethod.GET)  // TODO: Change to name
+    @RequestMapping(value = "/follower/{followerId}", method = RequestMethod.GET)
     public List<Tweet> getTweetsByFollowees(@PathVariable int followerId) {
         List<Tweet> followeeTweets = this.tweetRepository.findAllByFollowees(followerId);
         List<Tweet> ownTweets = this.tweetRepository.findByAuthorId(followerId);
