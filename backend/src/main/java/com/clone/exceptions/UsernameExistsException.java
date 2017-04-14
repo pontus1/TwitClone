@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(value = HttpStatus.CONFLICT, reason = "Username already taken")
 public class UsernameExistsException extends RuntimeException {
-    public UsernameExistsException(String email) {
-        super("There is an account with that email address: "  + email);
+    public UsernameExistsException(String username) {
+        super("There is an account with that username: "  + username);
     }
 }
