@@ -10,7 +10,14 @@
 angular.module('twitterCloneApp')
   .factory('userService', function($http, $sessionStorage, endpointService) {
 
+    var numberOfFollowees;
+
     return {
+
+      /* Get the number of people logged in user follows */
+      getNumberOfFolloweesByLoggedInUser: function() {
+        return numberOfFollowees;
+      },
 
       getLoggedInUser: function() {
         return $http({
@@ -69,6 +76,9 @@ angular.module('twitterCloneApp')
           /* Check if there is no return data */
           if (!Object.keys(response.data).length > 0) {
             response.data = null;
+            numberOfFollowees = 0;
+          } else {
+            numberOfFollowees = response.data.length;
           }
           return response.data;
         }, function errorCallback(response) {
@@ -85,6 +95,7 @@ angular.module('twitterCloneApp')
           if (!Object.keys(response.data).length > 0) {
             response.data = null;
           }
+          numberOfFollowees++;
           return response.data;
         }, function errorCallback(response) {
           return null;
@@ -100,6 +111,7 @@ angular.module('twitterCloneApp')
           if (!response.status === 204) {
             response.data = null;
           }
+          numberOfFollowees--;
           return response.data;
         }, function errorCallback(response) {
           return null;

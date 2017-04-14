@@ -11,8 +11,6 @@ angular.module('twitterCloneApp')
   .factory('tweetService', function($http, $sessionStorage, endpointService) {
 
     var tweetsByLoggedInUser;
-    // put new tweet: +1
-    // delete tweet -1
 
     return {
 
@@ -46,8 +44,11 @@ angular.module('twitterCloneApp')
           /* Check if there is no return data */
           if (!Object.keys(response.data).length > 0) {
             response.data = null;
+            tweetsByLoggedInUser = 0;
+          } else {
+            tweetsByLoggedInUser = response.data.length;
           }
-          tweetsByLoggedInUser = response.data.length;
+
           return response.data;
         }, function errorCallback(response) {
           return null;

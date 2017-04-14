@@ -14,18 +14,32 @@ angular.module('twitterCloneApp')
        Init controller
      *******************/
 
-    var loggedInUserId = $sessionStorage.logged_in_user.userId;
+    var loggedInUser = {};
+    $scope.username = '-';
+    $scope.tweets = '-';
+    $scope.followees = '-'
 
-    $scope.tweets = getNumberOfTweets();
-    // $scope.followees = getNumberOfFollowees();
+    /* Get logged in user before getting other data (that depends on logged in user) */
+    userService.getLoggedInUser().then(function(data) {
+      if (data !== null) {
+
+        loggedInUser = data;
+        $scope.username = data.username;
+        $scope.tweets = getNumberOfTweets(loggedInUser.userId);
+        $scope.followees = getNumberOfFollowees(loggedInUser.userId);
+
+      } else {
+        // TODO: Handle error
+      }
+    });
 
     /*******************
           Functions
      *******************/
 
     /* Get number of tweets posted by logged in user */
-    function getNumberOfTweets() {
-      tweetService.getTweetsByAuthor(loggedInUserId).then(function(data) {
+    function getNumberOfTweets(userId) {
+      tweetService.getTweetsByAuthor(userId).then(function(data) {
         if (data !== null) {
           return data.length;
         } else {
@@ -36,16 +50,16 @@ angular.module('twitterCloneApp')
     };
 
     /* Get number of users logged in user follows */
-    // function getNumberOfFollowees() {
-    //   userService.getAllFollowees(loggedInUserId).then(function(data) {
-    //     if (data !== null) {
-    //       return data.length;
-    //     } else {
-    //       // TODO: Handle error
-    //       return null;
-    //     }
-    //   });
-    // };
+    function getNumberOfFollowees(userId) {
+      userService.getAllFollowees(userId).then(function(data) {
+        if (data !== null) {
+          return data.length;
+        } else {
+          // TODO: Handle error
+          return null;
+        }
+      });
+    };
 
     /*******************
           Watchers
@@ -54,10 +68,17 @@ angular.module('twitterCloneApp')
     $scope.$watch(function() {
       return tweetService.getNumberOfTweetsByLoggedInUser();
     }, function(newVal, oldVal) {
-      // if (newVal !== oldVal) {
-        console.log("isLoggedIn changed to " + newVal);
+      if (newVal !== oldVal) {
         $scope.tweets = newVal;
-      // }
+      }
+    });
+
+    $scope.$watch(function() {
+      return userService.getNumberOfFolloweesByLoggedInUser();
+    }, function(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        $scope.followees = newVal;
+      }
     });
 
   });
