@@ -15,6 +15,7 @@
   <!-- build:css(.tmp) styles/main.css -->
   <link rel="stylesheet" href="styles/main.css">
   <!-- endbuild -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
 </head>
 
 <body ng-app="twitterCloneApp" ng-controller="MainCtrl">
@@ -23,25 +24,25 @@
     <![endif]-->
 
   <!-- Add your site or application content here -->
-  <div class="container-fluid" style="background-color:#eeeeee;">
+  <div class="container-fluid">
     <!-- Header -->
-    <div class="header" style="height:85px; margin-top:20px;">
-      <h3 class="text-muted pull-left">twitterClone </h3>
+    <div class="header">
+      <h3 class="text-muted pull-left"><i class="zmdi zmdi-twitter zmdi-hc-2x"></i><span> twitterClone <span></h3>
       <div ng-if="isLoggedOut()" ng-cloak="">
         <ul class="nav nav-pills pull-right">
           <li><a ng-href="#!/register">Skapa konto</a></li>
-          <li class="active"><a ng-href="#!/login">Logga in</a>
+          <li><a ng-href="#!/login">Logga in</a>
             <li>
         </ul>
       </div>
       <div ng-if="!isLoggedOut()" ng-cloak="">
-        <ul class="nav nav-pills pull-right">
-          <li class="active"><a ng-href="#!/home">Hem</a></li>
-          <li><a ng-href="#!/about">Om</a></li>
-          <li><a ng-href="#!/users">Användare</a></li>
-          <li><a ng-click="logOut()">Logga ut</a></li>
+        <ul class="nav nav-pills">
+          <li><a ng-href="#!/home"><i class="zmdi zmdi-home zmdi-hc-2x"></i></a></li>
+          <li><a ng-href="#!/about"><i class="zmdi zmdi-language-javascript zmdi-hc-2x"></i></a></li>
+          <li><a ng-href="#!/users"><i class="zmdi zmdi-accounts zmdi-hc-2x"></i></a></li>
+          <li><a ng-click="logOut()"><i class="zmdi zmdi-power zmdi-hc-2x"></i></a></li>
         </ul>
-        <h5 style="position: absolute;margin-top: 50px;">{{ loggedInUserName }}</h5>
+        <!-- <h5 style="position: absolute;margin-top: 50px;">{{ loggedInUserName }}</h5> -->
       </div>
     </div>
     <!-- Body -->
