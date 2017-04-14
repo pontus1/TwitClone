@@ -2,6 +2,8 @@ package com.clone.controllers;
 
 import com.clone.entities.Tweet;
 import com.clone.entities.User;
+import com.clone.exceptions.TweetNotFoundException;
+import com.clone.exceptions.UnauthorizedException;
 import com.clone.repositories.TweetRepository;
 import com.clone.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,8 +19,6 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api/tweets")
 public class TweetController {
-
-    //TODO: Handle errors / exceptions
 
     private final TweetRepository tweetRepository;
     private final UserService userService;
@@ -39,18 +38,19 @@ public class TweetController {
     // GET tweet by id
     @RequestMapping(value = "/{tweetId}", method = RequestMethod.GET)
     public Tweet getTweetById(@PathVariable int tweetId) {
+        vaidateTweet(tweetId);
         return this.tweetRepository.findOne(tweetId);
     }
 
     // GET all tweets by author id
-    @RequestMapping(value = "/author/{userId}", method = RequestMethod.GET)  // TODO: change to name
+    @RequestMapping(value = "/author/{userId}", method = RequestMethod.GET)
     public List<Tweet> getTweetsByUser(@PathVariable int userId) {
         return this.tweetRepository.findByAuthorId(userId);
     }
 
     // ----- IMPORTANT METHOD ------
     // GET all tweets from followees by follower id
-    @RequestMapping(value = "/{followerId}/followees", method = RequestMethod.GET)  // TODO: Change to name
+    @RequestMapping(value = "/follower/{followerId}", method = RequestMethod.GET)  // TODO: Change to name
     public List<Tweet> getTweetsByFollowees(@PathVariable int followerId) {
         List<Tweet> followeeTweets = this.tweetRepository.findAllByFollowees(followerId);
         List<Tweet> ownTweets = this.tweetRepository.findByAuthorId(followerId);
@@ -67,19 +67,32 @@ public class TweetController {
         return new ResponseEntity<Tweet>(tweet, HttpStatus.CREATED);
     }
 
-    // DELETE tweet by id
+    // DELETE tweet by id (only logged in user = author)
     @RequestMapping(value = "/{tweetId}", method = RequestMethod.DELETE)
     public ResponseEntity deleteTweetById(@PathVariable int tweetId) {
-        int authorId = this.tweetRepository.getOne(tweetId).getAuthorId();  // TODO: Check if tweet exsists
-        boolean requestedByAuthor = userService.getLoggedInUser().getUserId() == authorId;
-
-        if (!requestedByAuthor) {
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED); // TODO: create error for unauthorized requests
-        }
+        vaidateTweet(tweetId);
+        int authorId = this.tweetRepository.getOne(tweetId).getAuthorId();
+        authorizeUser(authorId);
         this.tweetRepository.delete(tweetId);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    // TODO: Change tweet??
+    // TODO: Update tweet??
+
+
+    // Check if a tweet exists, otherwise throw exception
+    private void vaidateTweet(int tweetId) {
+        this.tweetRepository.findByMessageId(tweetId).orElseThrow (
+                () -> new TweetNotFoundException(tweetId));
+    }
+
+    // Check if requested by logged in user, otherwise throw exception
+    private void authorizeUser(int userId) {
+        if (!(this.userService.getLoggedInUser().getUserId() == userId)) {
+            throw new UnauthorizedException(userId);
+        }
+    }
+
+
 
 }

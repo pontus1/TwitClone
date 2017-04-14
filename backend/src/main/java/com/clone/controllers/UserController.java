@@ -3,6 +3,7 @@ package com.clone.controllers;
 import com.clone.entities.Follow;
 import com.clone.entities.User;
 import com.clone.entities.UserRole;
+import com.clone.exceptions.UnauthorizedException;
 import com.clone.exceptions.UserNotFoundException;
 import com.clone.repositories.FollowRepository;
 import com.clone.repositories.UserRepository;
@@ -78,58 +79,57 @@ public class UserController {
     }
 
     // GET all followers of user by id
-    @RequestMapping(value = "/{userId}/followers", method = RequestMethod.GET)  // TODO: Change to name
+    @RequestMapping(value = "/{userId}/followers", method = RequestMethod.GET)
     public List<User> getAllFollowersOf(@PathVariable int userId) {
+        validateUser(userId);
         return this.userRepository.findAllFollowersOf(userId);
     }
 
     // GET all followees of user by id
     @RequestMapping(value = "/{userId}/followees", method = RequestMethod.GET)  // TODO: Change to name
     public List<User> getAllFolloweesOf(@PathVariable int userId) {
+        validateUser(userId);
         return this.userRepository.findAllFolloweesOf(userId);
     }
 
-    // PUT, update user by id
-    @RequestMapping(value = "/{userId}", method = RequestMethod.PUT)            // TODO: Only allow logged in user
+    // PUT, update user by id (only logged in user)
+    @RequestMapping(value = "/{userId}", method = RequestMethod.PUT)
     public ResponseEntity<User> updateUser(@PathVariable int userId, @RequestBody User updatedUser) {
         validateUser(userId);
+        authorizeUser(userId);
         User user = this.userRepository.findOne(userId);
         updatePropertiesFoundInRequestBody(updatedUser, user);
         this.userRepository.save(user);
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
-    // DELETE user by id
+    // DELETE user by id (only logged in user)
     @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)     // TODO: Only allow admin (and logged in user)
     public ResponseEntity deleteUserById(@PathVariable int userId) {
+        validateUser(userId);
+        authorizeUser(userId);
         this.userRepository.delete(userId);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    // PUT, add user to followees (follow a user)
+    // PUT, add user to followees (follow a user) (only logged in user)
     @RequestMapping(value = "/{followerId}/follow/{followeeId}", method = RequestMethod.PUT)
     public ResponseEntity followUser(@PathVariable("followerId") int followerId, @PathVariable("followeeId") int followeeId) {
 
-        boolean requestedByLoggedInUser = (userService.getLoggedInUser().getUserId() == followerId);
         validateUser(followeeId);
+        authorizeUser(followerId);
 
-        if (!requestedByLoggedInUser) {
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED); // TODO: create error for unauthorized requests
-        }
         Follow follow = createNewFollow(followerId, followeeId);
         return new ResponseEntity<Follow>(follow, HttpStatus.OK);
     }
 
-    // PUT, remove user from followees (unfollow a user)
+    // PUT, remove user from followees (unfollow a user) (only logged in user)
     @RequestMapping(value = "/{followerId}/unfollow/{followeeId}", method = RequestMethod.PUT)
     public ResponseEntity unfollowUser(@PathVariable("followerId") int followerId, @PathVariable("followeeId") int followeeId) {
 
-        boolean requestedByLoggedInUser = (userService.getLoggedInUser().getUserId() == followerId);
         validateUser(followeeId);
+        authorizeUser(followerId);
 
-        if (!requestedByLoggedInUser) {
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED); // TODO: create error for unauthorized requests
-        }
         Follow follow = this.followRepository.findByFollowerIdAndFolloweeId(followerId, followeeId);
         if (follow != null) {
             this.followRepository.delete(follow);
@@ -146,7 +146,6 @@ public class UserController {
         return follow;
     }
 
-
     // Update only not-null values
     private void updatePropertiesFoundInRequestBody(@RequestBody User updatedUser, User user) {
         if (updatedUser.getUsername() != null) user.setUsername(updatedUser.getUsername());
@@ -154,13 +153,17 @@ public class UserController {
         if (updatedUser.getPassword() != null) user.setPassword(updatedUser.getPassword());
     }
 
-
-
-    // TODO : use method!
     // Check if a user exists, otherwise throw exception
     private void validateUser(int userId) {
         this.userRepository.findByUserId(userId).orElseThrow (
                 () -> new UserNotFoundException(userId));
+    }
+
+    // Check if requested by logged in user, otherwise throw exception
+    private void authorizeUser(int userId) {
+        if (!(this.userService.getLoggedInUser().getUserId() == userId)) {
+            throw new UnauthorizedException(userId);
+        }
     }
 
 }

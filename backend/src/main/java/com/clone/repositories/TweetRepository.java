@@ -6,11 +6,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by pontusellboj on 2017-01-25.
  */
 public interface TweetRepository extends JpaRepository<Tweet, Integer> {
+
+    Optional<Tweet> findByMessageId(int messageId);
+
     List<Tweet> findByAuthorId(int userId);
 
 
