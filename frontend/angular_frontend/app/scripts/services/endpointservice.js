@@ -42,7 +42,7 @@ angular.module('twitterCloneApp')
               return base_url + '/api/users/' + userId + '/followees'
               /* tweets */
             case 'getTweetsByFollowee':
-              return base_url + '/api/tweets/' + userId + '/followees';
+              return base_url + '/api/tweets/follower/' + userId;
             case 'getTweetsByAuthor':
               return base_url + '/api/tweets/author/' + userId;
             case 'getAllTweets':
