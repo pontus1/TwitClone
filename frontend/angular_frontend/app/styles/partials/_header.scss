@@ -1,0 +1,51 @@
+/* Custom page header */
+.header {
+  //position: fixed;
+  border-bottom: 1px solid $light-turquoise;
+  height: 60px;
+
+  ul.nav {
+    text-align: center;
+    float: right;
+    li {
+      display: inline-block;
+      text-align: center;
+      a {
+        text-align: center;
+        border: 1px solid $light-turquoise;
+        margin-left: 5px;
+        color: $light-turquoise;
+        &:focus,
+        &:hover {
+          text-decoration: none;
+          background-color: $light-turquoise;
+          color: $body-color;
+        }
+      }
+    }
+  }
+
+  /* Make the masthead heading the same height as the navigation */
+  h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 40px;
+    padding-bottom: 19px;
+    color: $light-turquoise;
+    span {
+      display: none;
+    }
+  }
+
+  @media screen and (min-width: 500px) {
+    .nav {
+      float: right;
+      li > a {
+        margin-left: 10px;
+      }
+    }
+    h3 > span {
+      display: inline;
+    }
+  }
+}

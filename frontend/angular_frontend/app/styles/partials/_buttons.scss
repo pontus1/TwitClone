@@ -1,0 +1,15 @@
+.btn {
+  background-color: $light-turquoise;
+  border-color: $light-turquoise;
+  color: #ffffff;
+  &:visited, &:focus {
+    background-color: $light-turquoise;
+    border-color: $light-turquoise;
+    color: #ffffff;
+  }
+  &:active, &:hover {
+    background-color: $dark-turquoise;
+    border-color: $dark-turquoise;
+    color: #ffffff;
+  }
+}

@@ -1,0 +1,42 @@
+.card {
+  border: 1px solid $light-turquoise;
+  border-radius: 5px;
+  background-color: $body-color;
+  /* text */
+  //color: $dark-turquoise;
+}
+
+.card-header {
+  height: 100px;
+  background-color: $light-turquoise;
+  color: $body-color;
+  text-align: center;
+  border-radius: 3px 3px 0 0;
+  /* Text */
+  h5 {
+    margin: 0;
+    padding-top: 38px;
+    font-size: 18px;
+  }
+}
+
+/* Only user-card! */
+.number-container {
+  width: 70px;
+  height: 70px;
+  padding-top: 10px;
+  text-align: center;
+  color: $light-turquoise;
+  .number {
+    width: 30px;
+    height: 30px;
+    margin: 5px auto;
+    border-radius: 50%;
+    background-color: $light-turquoise;
+    color: #ffffff;
+    span {
+      position: relative;
+      top: 5px;
+    }
+  }
+}
