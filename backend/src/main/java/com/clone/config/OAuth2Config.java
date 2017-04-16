@@ -26,7 +26,7 @@ class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     public static final String RESOURCE_ID = "twitter-clone-client";  // TODO: Change name
 
     @Autowired
-    private AuthenticationManager /*Builder*/ authenticationManager;
+    private AuthenticationManager authenticationManager;
 
     private TokenStore tokenStore = new InMemoryTokenStore();
 
@@ -34,7 +34,7 @@ class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints
                 .tokenStore(this.tokenStore)
-                .authenticationManager(authenticationManager /*authentication -> authenticationManager.getOrBuild().authenticate(authentication)*/);
+                .authenticationManager(authenticationManager);
     }
 
     @Override

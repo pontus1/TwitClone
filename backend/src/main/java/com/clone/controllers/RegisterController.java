@@ -61,7 +61,7 @@ public class RegisterController {
     }
 
 
-    // Check if email exsist
+    // Check if email exist
     private boolean emailExist(String email) {
         User user = userRepository.findByEmail(email);
         if (user != null) {
@@ -70,7 +70,7 @@ public class RegisterController {
         return false;
     }
 
-    // Check if username exsist
+    // Check if username exist
     private boolean usernameExist(String username) {
         User user = userRepository.findByUsername(username);
         if (user != null) {
