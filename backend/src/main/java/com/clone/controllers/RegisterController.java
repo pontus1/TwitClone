@@ -24,6 +24,8 @@ import javax.transaction.Transactional;
 @RequestMapping(value = "/register")
 public class RegisterController {
 
+    public static final String URL = "/register/";
+
     private final UserRepository userRepository;
     private final UserService userService;
 
