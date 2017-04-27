@@ -13,6 +13,13 @@ public class AdminController {
 
     // TODO: Block User By ID
 
+    /**
+     * Returns a dummy string
+     *
+     * Test for users logged in as admins
+     *
+     * @return String
+     */
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String test() {
         return "Only admins can se me...";
