@@ -53,7 +53,7 @@ public class UserController {
 
     /**
      * Returns all users in database
-     * @return all users
+     * @return status 200 and all users
      */
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public List<User> getAllUsers() {
@@ -152,7 +152,7 @@ public class UserController {
     /**
      * Returns no content
      *
-     * Remove user specified by id from database.
+     * Remove user specified by id from database. This is used to unregister.
      *
      * If no user with specified id exist in database, a UserNotFoundException will be thrown.
      * If this method is called by anyone other then the user itself, an UnauthorizedException will be thrown.
