@@ -5,11 +5,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -19,7 +17,6 @@ import org.springframework.security.oauth2.provider.token.store.InMemoryTokenSto
  * Created by pontusellboj on 2017-01-25.
  */
 @Configuration
-//@EnableResourceServer
 @EnableAuthorizationServer
 class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
@@ -30,6 +27,11 @@ class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     private TokenStore tokenStore = new InMemoryTokenStore();
 
+    /**
+     * Configure authorization and token access for endpoints
+     * @param endpoints
+     * @throws Exception
+     */
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints
@@ -37,6 +39,20 @@ class OAuth2Config extends AuthorizationServerConfigurerAdapter {
                 .authenticationManager(authenticationManager);
     }
 
+    /**
+     * Configure security:
+     *
+     * withClients: allowed client applications
+     * authorizationGrantTypes: accepted ways to authorize
+     * authorities: users CRUD-rights in relation to database
+     * resourceIds: allowed client applications ids
+     * secret: secret required by client application
+     * accessTokenValiditySeconds: time before access-token expires (currently 1h)
+     * refreshTokenValiditySeconds: time before access-token expires (currently 24h)
+     *
+     * @param clients
+     * @throws Exception
+     */
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 
@@ -51,6 +67,10 @@ class OAuth2Config extends AuthorizationServerConfigurerAdapter {
                 .refreshTokenValiditySeconds(60 * 60 * 24);
     }
 
+    /**
+     * Returns DefaultTokenServices using InMemoryTokenService
+     * @return DefaultTokenServices
+     */
     @Bean
     @Primary
     public DefaultTokenServices tokenServices() {

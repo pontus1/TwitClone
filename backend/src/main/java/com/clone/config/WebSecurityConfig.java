@@ -19,6 +19,20 @@ public class WebSecurityConfig extends GlobalAuthenticationConfigurerAdapter {
     @Autowired
     DataSource dataSource;
 
+    /**
+     * Configure security and rights for users in database and in-memory user
+     *
+     * principal = users username
+     * credentials = users password
+     *
+     * authorities are based on user-role and enabled (false if user is blocked)
+     *
+     * An in-memory user is created with user-role = ANONYMOUS to allow access to registration
+     * for unregistered users.
+     *
+     * @param auth
+     * @throws Exception
+     */
     @Autowired
     public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
 

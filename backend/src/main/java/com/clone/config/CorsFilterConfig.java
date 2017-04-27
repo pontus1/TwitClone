@@ -16,10 +16,24 @@ import java.io.IOException;
 @Order(Ordered.HIGHEST_PRECEDENCE)  // Ensure corsfilter is ordered before all other filters
 public class CorsFilterConfig implements Filter {
 
-    @Override
-    public void init(FilterConfig fc) throws ServletException {
-    }
 
+    @Override
+    public void init(FilterConfig fc) throws ServletException {}
+
+    /**
+     * Filters all requests sent to servlet and sets response headers for access control:
+     *
+     * Allowed clients (currently "*" for any client)
+     * Allowed methods
+     * Max-age (preflight request can be cashed for 1h)
+     * Allowed headers
+     *
+     * @param req
+     * @param resp
+     * @param chain
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
         HttpServletResponse response = (HttpServletResponse) resp;
@@ -36,7 +50,7 @@ public class CorsFilterConfig implements Filter {
         }
     }
 
+
     @Override
-    public void destroy() {
-    }
+    public void destroy() {}
 }

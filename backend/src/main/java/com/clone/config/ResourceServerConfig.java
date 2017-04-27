@@ -14,12 +14,28 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 
+    /**
+     * Configure allowed client applications
+     * @param resources
+     * @throws Exception
+     */
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
         resources.resourceId(OAuth2Config.RESOURCE_ID);
     }
 
 
+    /**
+     * Configure security and rights for endpoints
+     *
+     * Rights are based on user-roles. An in-memory user with role = ANONYMOUS
+     * is created for the register endpoint, which allows access for unregistered users.
+     * Users with role = USER only has access to users- and tweets endpoints.
+     * Users with role = ADMIN has access to all endpoints.
+     *
+     * @param http
+     * @throws Exception
+     */
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
