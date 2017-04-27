@@ -19,7 +19,12 @@ public class OAuth2Controller {
     @Autowired
     private DefaultTokenServices tokenStore;
 
-    // LOGOUT  // TODO: Return proper HTTP-message
+    /**
+     * Revoke oauth-token being sent in request header and send back a status 200.
+     * This works as a logout since the token can no longer be used.
+     *
+     * @param request
+     */
     @RequestMapping(value = "/oauth/revoke-token", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public void logout(HttpServletRequest request) {
