@@ -15,6 +15,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 public class TwitterCloneApplication {
 
+	/**
+	 * Runs application
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		SpringApplication.run(TwitterCloneApplication.class, args);
 	}
