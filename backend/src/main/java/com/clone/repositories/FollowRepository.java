@@ -11,6 +11,14 @@ import org.springframework.data.repository.query.Param;
  */
 public interface FollowRepository extends JpaRepository<Follow, FollowPK> {
 
+    /**
+     * Returns a unique Follow entity specified by followerId (the user following)
+     * and followeeId (the user being followed)
+     *
+     * @param followerId
+     * @param followeeId
+     * @return Follow
+     */
     @Query("SELECT f FROM Follow f WHERE f.followerId = :followerId AND f.followeeId = :followeeId")
     Follow findByFollowerIdAndFolloweeId(@Param("followerId") int followerId, @Param("followeeId")int followeeId);
 }

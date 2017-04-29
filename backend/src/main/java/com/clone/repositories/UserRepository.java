@@ -13,17 +13,44 @@ import java.util.Optional;
  */
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-    Optional<User> findByUserId(int username);
+    /**
+     * Returns user specified by id
+     * @param userId
+     * @return Optional User
+     */
+    Optional<User> findByUserId(int userId);
 
+    /**
+     * Returns user specified by username
+     * @param username
+     * @return User
+     */
     User findByUsername(String username);
 
+    /**
+     * Returns user specified by email
+     * @param email
+     * @return User
+     */
     User findByEmail(String email);
 
-    // Find users followers
+    /**
+     * Returns all users following user specified by id
+     * (all followers of a user)
+     *
+     * @param userId
+     * @return List of users
+     */
     @Query("SELECT u FROM Follow f JOIN f.userByFollowerId u WHERE f.followeeId = :userId")
     List<User> findAllFollowersOf(@Param("userId") int userId);
 
-    // Find users that user is following (followees)
+    /**
+     * Returns all users that user specified by id is following
+     * (all users being followed by user)
+     *
+     * @param userId
+     * @return
+     */
     @Query("SELECT u FROM Follow f JOIN f.userByFolloweeId u WHERE f.followerId = :userId")
     List<User> findAllFolloweesOf(@Param("userId") int userId);
 }

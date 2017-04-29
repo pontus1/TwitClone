@@ -13,16 +13,28 @@ import java.util.Optional;
  */
 public interface TweetRepository extends JpaRepository<Tweet, Integer> {
 
+    /**
+     * Returns Tweet specified by id
+     * @param messageId
+     * @return Optional Tweet
+     */
     Optional<Tweet> findByMessageId(int messageId);
 
+    /**
+     * Returns list of tweets specified by authors id
+     * @param userId
+     * @return List of Tweets
+     */
     List<Tweet> findByAuthorId(int userId);
 
-
-    //@Query("SELECT DISTINCT t FROM Follow f JOIN f.userByFolloweeId u JOIN u.tweets t WHERE f.followerId = :followerId OR t.authorId =:followerId")
-    //List<Tweet>findAllByFollowees(@Param("followerId") int followerId);
-
-     @Query("SELECT t FROM Follow f JOIN f.userByFolloweeId u JOIN u.tweets t WHERE f.followerId = :followerId")
-     List<Tweet>findAllByFollowees(@Param("followerId") int followerId);
+    /**
+     * Returns List of tweets posted by users that specified user is following
+     *
+     * @param followerId
+     * @return List of Tweets
+     */
+    @Query("SELECT t FROM Follow f JOIN f.userByFolloweeId u JOIN u.tweets t WHERE f.followerId = :followerId")
+    List<Tweet>findAllByFollowees(@Param("followerId") int followerId);
 
 
 }
