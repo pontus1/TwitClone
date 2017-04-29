@@ -25,7 +25,6 @@ public class User {
 
 
     @Id
-    //@JsonIgnore
     @Column(name = "user_id")
     public int getUserId() {
         return userId;
@@ -56,6 +55,7 @@ public class User {
     }
 
     @Basic
+    @JsonIgnore
     @Column(name = "password")
     public String getPassword() {
         return password;
