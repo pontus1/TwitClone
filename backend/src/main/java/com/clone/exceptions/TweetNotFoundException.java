@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "No such Tweet")
 public class TweetNotFoundException extends RuntimeException {
+
     public TweetNotFoundException(int message_id) {
         super("could not find tweet '" + message_id + "'.");
     }
-
 }

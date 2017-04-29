@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason = "Not authorized")
 public class UnauthorizedException extends RuntimeException {
+
     public UnauthorizedException(int userId) {
         super("You only have authorization to perform this action for user with id: " + userId);
     }
