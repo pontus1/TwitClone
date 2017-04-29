@@ -81,7 +81,7 @@ public class RegisterController {
         User newUser = this.userRepository.findByUsername(user.getUsername());
         this.userService.setUserRole(newUser, "USER");
 
-        return new ResponseEntity<User>(user, HttpStatus.CREATED);
+        return new ResponseEntity<User>(newUser, HttpStatus.CREATED);
     }
 
     /**
