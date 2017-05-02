@@ -1,12 +1,12 @@
-DROP DATABASE twitter_clone_db;
+DROP DATABASE IF EXISTS twitter_clone_db;
 CREATE DATABASE twitter_clone_db;
 USE twitter_clone_db;
 
 CREATE TABLE `User`
 (
 	user_id INT NOT NULL AUTO_INCREMENT,
-    username VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
     `password` VARCHAR(255) NOT NULL,
     enabled TINYINT NOT NULL DEFAULT 1,
     PRIMARY KEY (user_id)
