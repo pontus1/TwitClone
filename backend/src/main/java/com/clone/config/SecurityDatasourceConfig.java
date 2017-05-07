@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  * Created by pontusellboj on 2017-01-25.
  */
 @Configuration
-public class MvcConfig extends WebMvcConfigurerAdapter {
+public class SecurityDatasourceConfig {
 
     /**
      * Returns driver manager for datasource.

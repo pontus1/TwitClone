@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import javax.sql.DataSource;
 
@@ -13,8 +14,9 @@ import javax.sql.DataSource;
  * Created by pontusellboj on 2017-01-28.
  */
 @Configuration
+@EnableWebSecurity
 @Order(SecurityProperties.BASIC_AUTH_ORDER - 10)
-public class WebSecurityConfig extends GlobalAuthenticationConfigurerAdapter {
+public class WebSecurityConfig extends GlobalAuthenticationConfigurerAdapter {  // Döp om till AuthenticationConfig
 
     @Autowired
     DataSource dataSource;
