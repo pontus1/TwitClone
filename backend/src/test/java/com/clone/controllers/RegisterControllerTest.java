@@ -4,10 +4,12 @@ import com.clone.TwitterCloneApplication;
 import com.clone.entities.User;
 import com.clone.repositories.UserRepository;
 import com.clone.services.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,16 +47,23 @@ public class RegisterControllerTest {
 
     private MockMvc mockMvc;
 
+    @Mock
+    private User user;
+
     private HttpMessageConverter mappingJackson2HttpMessageConverter;
 
     @Autowired
-    UserRepository userRepository;
+    private ObjectMapper objectMapper;
+
+    @MockBean
+    private UserRepository userRepository;
+
+    @MockBean
+    private UserService userService;
+
 
     @Autowired
-    UserService userService;
-
-    @Autowired
-    WebApplicationContext webApplicationContext;
+    private WebApplicationContext webApplicationContext;
 
     @Autowired
     void setConverters(HttpMessageConverter<?>[] converters) {
@@ -68,22 +77,34 @@ public class RegisterControllerTest {
                 this.mappingJackson2HttpMessageConverter);
     }
 
-
     @Before
     public void setUp() throws Exception {
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @Test
+    public void registerUserWithoutParams() throws Exception {
+
+        // Bad request = 400
+        mockMvc.perform(post("/register/"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void registerUser() throws Exception {
+    public void registerUserWithParams() throws Exception {
 
-        // No parameters = 400
-        mockMvc.perform(post("/register/"))
-                .andExpect(status().isBadRequest());
+        this.user = new User();
+
+        user.setUsername("Jane Doe");
+        user.setEmail("janedoe@test.com");
+        user.setPassword("password");
+
+        // Is created = 201
+        this.mockMvc.perform(post("/register/")
+                .contentType(contentType)
+                .content(objectMapper.writeValueAsString(user)))
+                .andExpect(status().isCreated())
+                .andExpect(content().string("{\"userId\":0,\"username\":\"Jane Doe\",\"email\":\"janedoe@test.com\",\"password\":\"password\",\"enabled\":1,\"followers\":null}")); // TODO: Se why userId = 0
     }
 
 }

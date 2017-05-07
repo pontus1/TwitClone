@@ -40,8 +40,6 @@ public class UserService {
         return loggedInUser;
     }
 
-    // Create new user_role and set it to user
-
     /**
      * Creates a new User-Role specified by role and sets it to specified user
      *
@@ -58,7 +56,23 @@ public class UserService {
         user.setUserRole(userRole);
     }
 
-    // Get enabled status (blocked or not)
+    /**
+     * Blocks a user by setting enabled to 0 (false)
+     * @param user
+     */
+    public void blockUser(User user) {
+        user.setEnabled((byte) 0);
+        this.userRepository.save(user);
+    }
+
+    /**
+     * Unblocks a user by setting enabled to 1 (true)
+     * @param user
+     */
+    public void unblockUser(User user) {
+        user.setEnabled((byte) 1);
+        this.userRepository.save(user);
+    }
 
     /**
      * Returns true if user specified by id is enabled.
