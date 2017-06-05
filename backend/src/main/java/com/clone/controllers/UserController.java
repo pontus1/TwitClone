@@ -192,7 +192,7 @@ public class UserController {
         authorizeUser(followerId);
 
         Follow follow = createNewFollow(followerId, followeeId);
-        return new ResponseEntity<Follow>(follow, HttpStatus.OK);
+        return new ResponseEntity<Follow>(follow, HttpStatus.NO_CONTENT);
     }
 
     /**
